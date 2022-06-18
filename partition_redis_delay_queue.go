@@ -44,7 +44,7 @@ func (q *PartitionRedisDelayQueue) Push(ctx context.Context, msg *Msg) error {
 	return nil
 }
 
-func (q *PartitionRedisDelayQueue) Consume(topic string, batchSize, partition int, fn func(msg *Msg) (error, func())) {
+func (q *PartitionRedisDelayQueue) Consume(topic string, batchSize, partition int, fn func(msg *Msg) (func(), error)) {
 	for {
 		// 批量获取已经准备好执行的消息
 		now := time.Now().Unix()

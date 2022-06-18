@@ -20,12 +20,12 @@ func TestNewPartitionRedisDelayQueue(t *testing.T) {
 	count := 10
 	var wg sync.WaitGroup
 	wg.Add(count)
-	go q.Consume(topic, 5, 0, func(msg *Msg) (error, func()) {
+	go q.Consume(topic, 5, 0, func(msg *Msg) (func(), error) {
 		fmt.Printf("consume partiton0: %+v\n", msg)
 		wg.Done()
 		return nil, nil
 	})
-	go q.Consume(topic, 5, 1, func(msg *Msg) (error, func()) {
+	go q.Consume(topic, 5, 1, func(msg *Msg) (func(), error) {
 		fmt.Printf("consume partiton1: %+v\n", msg)
 		wg.Done()
 		return nil, nil
