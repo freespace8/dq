@@ -1,4 +1,4 @@
-package dq
+package redisDQ
 
 const delayQueuePushRedisScript = `
 -- KEYS[1]: topicZSet
