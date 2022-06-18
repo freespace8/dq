@@ -1,4 +1,4 @@
-module github.com/freespace8/dq
+module github.com/freespace8/redisDQ
 
 go 1.18
 
