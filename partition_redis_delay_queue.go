@@ -44,7 +44,7 @@ func (q *PartitionRedisDelayQueue) Push(ctx context.Context, msg *Msg) error {
 	return nil
 }
 
-func (q *PartitionRedisDelayQueue) Consume(topic string, batchSize, partition int, fn func(msg *Msg) error) {
+func (q *PartitionRedisDelayQueue) Consume(topic string, batchSize, partition int, fn func(msg *Msg) (error, func())) {
 	for {
 		// 批量获取已经准备好执行的消息
 		now := time.Now().Unix()
@@ -69,7 +69,7 @@ func (q *PartitionRedisDelayQueue) Consume(topic string, batchSize, partition in
 			}
 
 			// 处理消息
-			err = fn(&Msg{
+			err, callback := fn(&Msg{
 				Topic:     topic,
 				Key:       key,
 				Body:      body,
@@ -82,6 +82,10 @@ func (q *PartitionRedisDelayQueue) Consume(topic string, batchSize, partition in
 			// 如果消息处理成功，删除消息
 			q.delScript.Run(context.Background(), q.client,
 				[]string{q.topicZSet(topic, partition), q.topicHash(topic, partition)}, key)
+
+			if callback != nil {
+				callback()
+			}
 		}
 	}
 }
