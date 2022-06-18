@@ -69,7 +69,7 @@ func (q *PartitionRedisDelayQueue) Consume(topic string, batchSize, partition in
 			}
 
 			// 处理消息
-			err, callback := fn(&Msg{
+			callback, err := fn(&Msg{
 				Topic:     topic,
 				Key:       key,
 				Body:      body,
